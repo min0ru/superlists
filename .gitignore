@@ -1,0 +1,12 @@
+# Python cache
+__pycache__
+*.pyc
+
+# IDE settings
+.idea
+
+# Django database
+db.sqlite3
+
+# Selenium logs
+geckodriver.log
