@@ -31,29 +31,49 @@ class NewVisitorTest(unittest.TestCase):
         # He types "Buy peacock feathers" into a text box
         todo_1_text = 'Buy peacock feathers'
         inputbox.send_keys(todo_1_text)
-
-        # When he hits enter, the page updates, and now the page lists
-        # "1: Buy peacock feathers" as an item in a to-do list
         inputbox.send_keys(Keys.ENTER)
         time.sleep(1)
 
+        # When he hits enter, the page updates, and now the page lists
+        # "1: Buy peacock feathers" as an item in a to-do list
+
         table = self.browser.find_element_by_id('id_list_table')
         rows = table.find_elements_by_tag_name('tr')
-        self.assertTrue(
-            any(row.text == todo_1_text for row in rows),
-            'New to-do item did not appear in table'
+        self.assertIn(
+            f'1: {todo_1_text}',
+            (row.text for row in rows),
+            'First to-do item did not appear in table'
         )
 
         # There is still a text box inviting him to add another item
         # He types "Use peacock feathers to make a fly"
-        self.fail('Finish the test!')
+        todo_2_text = 'Use peacock feathers to make a fly'
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox.send_keys(todo_2_text)
+        inputbox.send_keys(Keys.ENTER)
+        time.sleep(1)
 
         # The page updates again and now shows both items in list
+        table = self.browser.find_element_by_id('id_list_table')
+        rows = table.find_elements_by_tag_name('tr')
+        self.assertIn(
+            f'1: {todo_1_text}',
+            (row.text for row in rows),
+            'First to-do item did not appear in table after second post'
+        )
+        self.assertIn(
+            f'2: {todo_2_text}',
+            (row.text for row in rows),
+            'Second to-do item did not appear in table after second post'
+        )
 
         # User checks whether the site will remember his list
         # There is a text bar that has a unique URL for created to-do list with some explanatory text
 
         # He visits that URL, to-do list is still here
+
+        # FT is unfinished yet
+        self.fail('FT should fail here because it\'s not finished yet!')
 
 
 if __name__ == '__main__':
