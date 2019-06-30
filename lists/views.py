@@ -12,5 +12,6 @@ def home_page(request):
 
         return redirect('/')
 
-    context = {}
+    list_items = Item.objects.all()
+    context = {'items': list_items}
     return render(request, 'home.html', context)
