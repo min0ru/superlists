@@ -69,10 +69,41 @@ class NewVisitorTest(LiveServerTestCase):
         self.wait_for_row_in_list_table(f'1: {todo_1_text}')
         self.wait_for_row_in_list_table(f'2: {todo_2_text}')
 
-        # User checks whether the site will remember his list
-        # There is a text bar that has a unique URL for created to-do list with some explanatory text
+    def test_multiple_users_can_start_lists_at_different_urls(self):
+        # First user starts a new to-do list
+        self.browser.get(self.live_server_url)
+        first_user_todo_text = 'Buy peacock feathers'
+        self.post_new_item(first_user_todo_text)
+        self.wait_for_row_in_list_table(f'1: {first_user_todo_text}')
 
-        # He visits that URL, to-do list is still here
+        # First user notices that his list has a unique URL
+        first_user_list_url = self.browser.current_url
+        self.assertRegex(first_user_list_url, '/lists/.+')
 
-        # FT is unfinished yet
-        self.fail('FT should fail here because it\'s not finished yet!')
+        # Second user comes to the site
+
+        ## We use a new browser session to make sure that no information
+        ## of the previous user is coming from cookies etc
+        self.browser.quit()
+        self.browser = webdriver.Firefox()
+
+        # Second user visits home page
+        # There is no sign of previous user information
+        self.browser.get(self.live_server_url)
+        page_text = self.browser.find_element_by_tag_name('body').text
+        self.assertNotIn(first_user_todo_text, page_text)
+
+        # Second user starts a new list by entering a new item
+        second_user_todo_text = 'Buy milk'
+        self.post_new_item(second_user_todo_text)
+        self.wait_for_row_in_list_table(f'1: {second_user_todo_text}')
+
+        # Second user gets his own unique URL
+        second_user_url = self.browser.current_url
+        self.assertRegex(second_user_url, '/lists/.+')
+        self.assertNotEqual(first_user_list_url, second_user_url)
+
+        # Again, there is no trace of first user's list
+        page_text = self.browser.find_element_by_tag_name('body').text
+        self.assertNotIn(first_user_todo_text, page_text)
+        self.assertIn(second_user_todo_text, page_text)
