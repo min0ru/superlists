@@ -1,23 +1,23 @@
 from django.test import TestCase
-from lists.models import Item
+from lists.models import Item, List
 
 
-class ItemModelTest(TestCase):
+class ListModelTest(TestCase):
 
     def test_saving_and_retrieving_items(self):
-        first_item = Item()
-        first_item.text = 'The first (ever) list item'
-        first_item.save()
+        new_list = List.objects.create()
+        first_item = Item.objects.create(text='First item', list=new_list)
+        second_item = Item.objects.create(text='Second item', list=new_list)
 
-        second_item = Item()
-        second_item.text = 'Item the second'
-        second_item.save()
+        saved_list = List.objects.first()
+        self.assertEqual(new_list, saved_list)
 
-        saved_items = Item.objects.all()
-        self.assertEqual(saved_items.count(), 2)
-
+        saved_items = Item.objects.all().order_by('id')
         first_saved_item = saved_items[0]
         second_saved_item = saved_items[1]
+
+        self.assertEqual(first_saved_item.list, new_list)
+        self.assertEqual(second_saved_item.list, new_list)
 
         self.assertEqual(first_saved_item.text, first_item.text)
         self.assertEqual(second_saved_item.text, second_item.text)
@@ -53,8 +53,10 @@ class ListViewTest(TestCase):
     def test_displays_all_items(self):
         test_items = ['Item 1', 'Item 2', 'Item 3']
 
+        test_list = List.objects.create()
+
         for item in test_items:
-            Item.objects.create(text=item)
+            Item.objects.create(text=item, list=test_list)
 
         response = self.client.get('/lists/the-only-list-in-the-world/')
 
