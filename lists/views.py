@@ -17,7 +17,6 @@ def new_list(request):
 
 def view_list(request, list_id):
     selected_list = List.objects.get(id=list_id)
-    items = Item.objects.filter(list_id=list_id)
     return render(request, 'list.html', {'list': selected_list})
 
 

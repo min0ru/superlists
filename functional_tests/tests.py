@@ -88,8 +88,8 @@ class NewVisitorTest(StaticLiveServerTestCase):
 
         # Second user comes to the site
 
-        ## We use a new browser session to make sure that no information
-        ## of the previous user is coming from cookies etc
+        # We use a new browser session to make sure that no information
+        # of the previous user is coming from cookies etc
         self.browser.quit()
         self.browser = webdriver.Firefox()
 
@@ -138,4 +138,3 @@ class NewVisitorTest(StaticLiveServerTestCase):
             self.browser.get_window_size()['width'] / 2,
             delta=10
         )
-
