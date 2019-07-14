@@ -44,6 +44,10 @@ class NewListTest(TestCase):
         new_list = List.objects.first()
         self.assertRedirects(response, f'/lists/{new_list.id}/')
 
+    def test_redirect_GET_to_home(self):
+        response = self.client.get('/lists/new')
+        self.assertRedirects(response, '/')
+
 
 class ListViewTest(TestCase):
 
