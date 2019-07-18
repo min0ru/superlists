@@ -12,7 +12,7 @@ MAX_WAIT_SECONDS = 4
 class NewVisitorTest(StaticLiveServerTestCase):
 
     def setUp(self):
-        self.browser = webdriver.Firefox()
+        self.browser = webdriver.Chrome()
         staging_server = os.environ.get('STAGING_SERVER')
 
         if staging_server:
@@ -90,8 +90,7 @@ class NewVisitorTest(StaticLiveServerTestCase):
 
         # We use a new browser session to make sure that no information
         # of the previous user is coming from cookies etc
-        self.browser.quit()
-        self.browser = webdriver.Firefox()
+        self.browser.delete_all_cookies()
 
         # Second user visits home page
         # There is no sign of previous user information
