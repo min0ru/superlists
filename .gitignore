@@ -13,3 +13,6 @@ db.sqlite3
 
 # Selenium logs
 geckodriver.log
+
+# Environment files
+.env
